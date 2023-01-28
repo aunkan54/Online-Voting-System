@@ -1,0 +1,218 @@
+#include<bits/stdc++.h>
+#include<iostream>
+#include<stdio.h>
+#include<vector>
+#include<string>
+#include<fstream>
+#include<sstream>
+#include<windows.h> ///Sleep function
+#include<dos.h> ///delay function
+
+using namespace std;
+
+
+class Base
+{
+protected:
+    string fname,lname,f_name,add,pass,mob;
+    int nid_number;
+public:
+    void virtual display() = 0;
+};
+
+
+class Voter : public Base
+{
+public:
+    int initial = 1;
+    void first_name(string f)
+    {
+        fname = f;
+    }
+    void last_name(string l)
+    {
+        lname = l;
+    }
+    void father_name(string fn)
+    {
+        f_name = fn;
+    }
+    void address(string a)
+    {
+        add = a;
+    }
+    void mobile(string m)
+    {
+        mob = m;
+    }
+    void national_id(int n)
+    {
+        nid_number = n;
+    }
+    void password(string p)
+    {
+        pass = p;
+    }
+
+    void file_write()
+    {
+        fstream f_reg;
+
+        f_reg.open("Voter_List.csv", ios::out | ios::app);
+
+        f_reg << initial << ", "
+              << pass << ", "
+              << nid_number << ", "
+              << fname << ", "
+              << lname << ", "
+              << f_name << ", "
+              << add << ", "
+              << mob << "\n";
+
+        f_reg.close();
+    }
+
+    void display()
+    {
+        cout << "Hey";
+    }
+};
+
+
+int main()
+{
+    Voter V;
+
+    int c;
+
+    while(true)
+    {
+        string f,l,fn,a,m,p,s;
+        int n;
+        cout << "Enter your choice: ";
+        cin >> c;
+
+        switch(c)
+        {
+        case 1: /// login
+        {
+            int C;
+
+            A:cout << "\nTo Log in as Admin \"Press 1\": ";
+            cout << "\nTo Log in as Voter \"Press 2\": \n";
+            cin >> C;
+            if(C==1)
+            {
+
+            }
+            else if(C==2)
+            {
+                cout << "\n\nEnter your NID number: "; /// taking input for login
+                cin >> n;
+
+                fstream f_login;  /// declaring file
+
+                f_login.open("Voter_List.csv", ios::in);
+
+                vector<string> row;
+                string line,word,temp;
+                int nid;
+
+                while(f_login>>temp)
+                {
+                    row.clear(); /// clearing all elements of the vector
+
+                    getline(f_login,line);
+                    stringstream s(line);
+
+                    while(getline(s,word,','))   /// pushing values in vector row
+                    {
+                        row.push_back(word);
+                    }
+
+                    nid = std::stoi(row[1]); /// converting nid from string to integer
+
+                    int i,j,Count = 0;
+
+                    if(n==nid)  /// checking nid
+                    {
+                        cout << "\nEnter your Password: ";
+                        B:cin >> p
+                        if(p.size()!=(row[0].size()-1))
+                        {
+                            Count = 0;
+                            cout << "\nWrong Password. Enter your password again: ";
+                            goto B;
+                        }
+                        else
+                        {
+                            for(i=0,j=1; i<p.size(),j<row[0].size(); i++,j++)
+                            {
+                                if(p.at(i)!=row[0].at(j))
+                                {
+                                    Count = 0;
+                                    cout << "\nWrong Password. Enter your password again: ";
+                                    goto B;
+                                }
+                                else Count = 1;
+                            }
+                            if(Count==1)
+                            {
+                                cout << "\nSuccessful Login.\n";
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                cout << "\nWrong Key Entered. Press again.\n";
+                goto A;
+            }
+            break;
+        }
+        case 2: ///registration
+        {
+            cout << "\nEnter your First Name: ";
+            cin >> f;
+            V.first_name(f);
+
+            cout << "\nEnter your Last Name: ";
+            cin >> l;
+            V.last_name(l);
+
+            cout << "\nEnter your Father's Name: ";
+            cin >> fn;
+            V.father_name(fn);
+
+            cout << "\nEnter your Address: ";
+            cin >> a;
+            V.address(a);
+
+            cout << "\nEnter your Mobile Number: ";
+            cin >> m;
+            V.mobile(m);
+
+            cout << "\nEnter your NID Number: ";
+            cin >> n;
+            V.national_id(n);
+
+            cout << "\nEnter your Password: ";
+            cin >> p;
+            V.password(p);
+
+            Sleep(500); ///sleep the console for 500 milliseconds
+            cout << "\n\nRegistration Successful!!!" << "\n\n";
+
+            system("pause"); ///press any key to continue
+            cout << "\n\n";
+
+            V.file_write();
+
+            break;
+        }
+        }
+    }
+}
